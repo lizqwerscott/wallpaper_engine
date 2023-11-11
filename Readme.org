@@ -1,0 +1,7 @@
+* Wallpaper engine play
+A Video wallpaper engine, use [[https://github.com/GhostNaN/mpvpaper][mpvpaper]].
+*** Usage
+The first parameter is whether to play mute, The second parameter is the position of wallpaper engine workshop.
+#+begin_src bash
+  wallpaperplay mute /path/to/wallpaper_engine/path
+#+end_src
