@@ -162,7 +162,7 @@ pub fn play_wallpapers(
         let save_path = save_path.join(Path::new("wallpaper_temp"));
 
         if save_path.exists() {
-            fs::remove_dir(save_path.clone())?;
+            fs::remove_dir_all(save_path.clone())?;
         }
         fs::create_dir_all(save_path.clone())?;
 
