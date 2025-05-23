@@ -1,7 +1,12 @@
 * Wallpaper engine play
 A Video wallpaper engine, use [[https://github.com/GhostNaN/mpvpaper][mpvpaper]].
 *** Usage
+**** use mpvpaper play in hyprland
 The first parameter is whether to play mute, The second parameter is the position of wallpaper engine workshop.
 #+begin_src bash
   wallpaperplay mute /path/to/wallpaper_engine/path
+#+end_src
+**** only generate video list
+#+begin_src bash
+  wallpaperplay mute /path/to/wallpaper_engine/path /path/to/wallpaper_engine/output_path
 #+end_src
