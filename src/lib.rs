@@ -1,44 +1,9 @@
-use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-pub type BDError = Box<dyn std::error::Error>;
-pub type BDEResult<T> = Result<T, BDError>;
-
-#[derive(Debug, Clone)]
-pub struct WallpaperError {
-    err: String,
-}
-
-impl WallpaperError {
-    pub fn new(err: &str) -> WallpaperError {
-        WallpaperError {
-            err: err.to_string(),
-        }
-    }
-}
-
-impl std::fmt::Display for WallpaperError {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "{}", self.err)
-    }
-}
-
-impl std::error::Error for WallpaperError {
-    fn description(&self) -> &str {
-        &self.err
-    }
-
-    fn cause(&self) -> Option<&dyn std::error::Error> {
-        // 泛型错误。没有记录其内部原因。
-        None
-    }
-}
-
-pub fn ba_error(error: &str) -> Box<dyn std::error::Error> {
-    Box::new(WallpaperError::new(error))
-}
+use anyhow::{anyhow, Result};
+use serde::{Deserialize, Serialize};
 
 fn is_movie_file(path: &Path) -> bool {
     if !path.is_file() {
@@ -103,13 +68,13 @@ impl Wallpaper {
     }
 }
 
-pub fn load_wallpaper(dir_path: &Path) -> BDEResult<Vec<Wallpaper>> {
+pub fn load_wallpaper(dir_path: &Path) -> Result<Vec<Wallpaper>> {
     if !dir_path.exists() {
-        return Err(ba_error("This path does not exist"));
+        return Err(anyhow!("This path does not exist"));
     }
 
     if !dir_path.is_dir() {
-        return Err(ba_error("This path is not a directory"));
+        return Err(anyhow!("This path is not a directory"));
     }
 
     let mut wallpapers: Vec<Wallpaper> = Vec::new();
@@ -142,7 +107,7 @@ pub fn play_playlist(playlist_dir: &Path, mutep: bool) {
     println!("run: {}", res);
 }
 
-pub fn generate_wallpapers(wallpapers: &Vec<Wallpaper>, output_path: &Path) -> BDEResult<()> {
+pub fn generate_wallpapers(wallpapers: &Vec<Wallpaper>, output_path: &Path) -> Result<()> {
     // 创建目录保存临时视频链接
     let save_path = output_path;
 
@@ -160,11 +125,7 @@ pub fn generate_wallpapers(wallpapers: &Vec<Wallpaper>, output_path: &Path) -> B
     Ok(())
 }
 
-pub fn play_wallpapers(
-    load_path: &Path,
-    wallpapers: &Vec<Wallpaper>,
-    mutep: bool,
-) -> BDEResult<()> {
+pub fn play_wallpapers(load_path: &Path, wallpapers: &Vec<Wallpaper>, mutep: bool) -> Result<()> {
     // 关闭其他mpv
     let command = format!("pkill mpvpaper");
     let output = Command::new("sh")
