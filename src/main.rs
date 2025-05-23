@@ -1,7 +1,7 @@
 use std::env;
 use std::path::Path;
 
-use wallpaper_engine::{load_wallpaper, play_wallpapers};
+use wallpaper_engine::{generate_wallpapers, load_wallpaper, play_wallpapers};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -22,6 +22,11 @@ fn main() {
         );
     }
 
-    // 按照顺序播放壁纸
-    play_wallpapers(dir_path, &res, mutep).unwrap();
+    if args.len() == 4 {
+        let output_path = Path::new(&args[3]);
+        generate_wallpapers(&res, output_path).unwrap();
+    } else {
+        // 按照顺序播放壁纸
+        play_wallpapers(dir_path, &res, mutep).unwrap();
+    }
 }

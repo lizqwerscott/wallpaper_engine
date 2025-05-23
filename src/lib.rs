@@ -142,6 +142,24 @@ pub fn play_playlist(playlist_dir: &Path, mutep: bool) {
     println!("run: {}", res);
 }
 
+pub fn generate_wallpapers(wallpapers: &Vec<Wallpaper>, output_path: &Path) -> BDEResult<()> {
+    // 创建目录保存临时视频链接
+    let save_path = output_path;
+
+    if save_path.exists() {
+        fs::remove_dir_all(save_path)?;
+    }
+    fs::create_dir_all(save_path)?;
+
+    for wallpaper in wallpapers {
+        let file_name = wallpaper.file.file_name().unwrap().to_str().unwrap();
+        let new_file_path = save_path.join(Path::new(file_name));
+        std::os::unix::fs::symlink(wallpaper.file.clone(), new_file_path)?;
+    }
+
+    Ok(())
+}
+
 pub fn play_wallpapers(
     load_path: &Path,
     wallpapers: &Vec<Wallpaper>,
